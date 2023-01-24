@@ -5,6 +5,8 @@ mod error;
 pub mod msg;
 pub mod state;
 
+mod robot;
+mod robot_test;
 #[cfg(test)]
 mod tests;
 

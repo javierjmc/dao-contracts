@@ -11,8 +11,8 @@ use cw20::Cw20Coin;
 use cw_multi_test::{next_block, App, Contract, ContractWrapper, Executor};
 use cw_ownable::{Action, Expiration, Ownership, OwnershipError};
 
-const OWNER: &str = "owner";
-const OWNER2: &str = "owner2";
+pub const OWNER: &str = "owner";
+pub const OWNER2: &str = "owner2";
 
 pub fn cw20_contract() -> Box<dyn Contract<Empty>> {
     let contract = ContractWrapper::new(
@@ -51,7 +51,7 @@ fn distributor_contract_v1() -> Box<dyn Contract<Empty>> {
     Box::new(contract)
 }
 
-fn instantiate_cw20(app: &mut App, initial_balances: Vec<Cw20Coin>) -> Addr {
+pub fn instantiate_cw20(app: &mut App, initial_balances: Vec<Cw20Coin>) -> Addr {
     let cw20_id = app.store_code(cw20_contract());
     let msg = cw20_base::msg::InstantiateMsg {
         name: String::from("Test"),
@@ -66,7 +66,7 @@ fn instantiate_cw20(app: &mut App, initial_balances: Vec<Cw20Coin>) -> Addr {
         .unwrap()
 }
 
-fn instantiate_staking(app: &mut App, cw20_addr: Addr) -> Addr {
+pub fn instantiate_staking(app: &mut App, cw20_addr: Addr) -> Addr {
     let staking_id = app.store_code(staking_contract());
     let msg = cw20_stake::msg::InstantiateMsg {
         owner: Some(OWNER.to_string()),
@@ -84,7 +84,7 @@ fn instantiate_staking(app: &mut App, cw20_addr: Addr) -> Addr {
     .unwrap()
 }
 
-fn instantiate_distributor(app: &mut App, msg: InstantiateMsg) -> Addr {
+pub(crate) fn instantiate_distributor(app: &mut App, msg: InstantiateMsg) -> Addr {
     let code_id = app.store_code(distributor_contract());
     app.instantiate_contract(
         code_id,
@@ -97,7 +97,7 @@ fn instantiate_distributor(app: &mut App, msg: InstantiateMsg) -> Addr {
     .unwrap()
 }
 
-fn get_balance_cw20<T: Into<String>, U: Into<String>>(
+pub fn get_balance_cw20<T: Into<String>, U: Into<String>>(
     app: &App,
     contract_addr: T,
     address: U,
@@ -109,7 +109,7 @@ fn get_balance_cw20<T: Into<String>, U: Into<String>>(
     result.balance
 }
 
-fn get_info<T: Into<String>>(app: &App, distributor_addr: T) -> InfoResponse {
+pub fn get_info<T: Into<String>>(app: &App, distributor_addr: T) -> InfoResponse {
     let result: InfoResponse = app
         .wrap()
         .query_wasm_smart(distributor_addr, &QueryMsg::Info {})
